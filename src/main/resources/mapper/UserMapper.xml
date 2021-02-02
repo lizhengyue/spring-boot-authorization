@@ -4,4 +4,7 @@
     <select id="selectAll" resultType="com.demo.entity.User">
         select * from user
     </select>
+    <select id="selectPageVo" resultType="com.demo.entity.User">
+        select * from user
+    </select>
 </mapper>

@@ -28,13 +28,11 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         // nested exception is org.apache.ibatis.reflection.ReflectionException: Could not set property 'createTime' of 'class com.demo.entity.User' with value
         // '2021-01-31T14:07:00.117' Cause: java.lang.IllegalArgumentException: argument type mismatch
         // LocalDateTime.now() 如果用这个的话 那么实体类中时间地类型也应该是LocalDateTime 不能是Date类型
-
-
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        Object updateTime = getFieldValByName("updateTime", metaObject);
+        Object updateTime = getFieldValByName("updateTime", metaObject);//如果有值就不需要更新
         if (updateTime == null) {
             setFieldValByName("updateTime", new Date(), metaObject);
         }

@@ -2,6 +2,7 @@ package com.demo.service.impl;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.demo.dao.UserMapper;
 import com.demo.entity.User;
 import org.junit.Assert;
@@ -71,4 +72,13 @@ public class UserServiceImplTest {
         System.out.println(save);
     }
 
+    @Test
+    public void getList() {
+    }
+
+    @Test
+    public void selectUserPage() {
+        Page<User> page = new Page<>(1, 3);
+        userServiceImpl.selectUserPage(page,1);
+    }
 }
