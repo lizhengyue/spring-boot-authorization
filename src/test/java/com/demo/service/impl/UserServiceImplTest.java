@@ -79,6 +79,6 @@ public class UserServiceImplTest {
     @Test
     public void selectUserPage() {
         Page<User> page = new Page<>(1, 3);
-        userServiceImpl.selectUserPage(page,1);
+        userServiceImpl.selectUserPage(page,1000);
     }
 }

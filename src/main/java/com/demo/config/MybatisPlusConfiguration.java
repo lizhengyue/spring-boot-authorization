@@ -14,6 +14,7 @@ public class MybatisPlusConfiguration {
 	@Bean
 	public MybatisPlusInterceptor mybatisPlusInterceptor() {
 		MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+		//使用多租户
 		interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
 			@Override
 			public String getTenantIdColumn() {
@@ -30,15 +31,10 @@ public class MybatisPlusConfiguration {
 				return !"user".equalsIgnoreCase(tableName);
 			}
 		}));
-		// 如果用了分页插件注意先 add TenantLineInnerInterceptor 再 add PaginationInnerInterceptor
-		// 用了分页插件必须设置 MybatisConfiguration#useDeprecatedExecutor = false
+		//使用分页功能只需要加这一句话就可以了
 		interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
 		return interceptor;
 	}
 
-	@Bean
-	public ConfigurationCustomizer configurationCustomizer() {
-		return configuration -> configuration.setUseDeprecatedExecutor(false);
-	}
 
 }
