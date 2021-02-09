@@ -142,13 +142,45 @@ public class MapServiceTest {
         List<Map<String,Integer>> objects = new ArrayList<>();
         objects.add(map1);
         objects.add(map2);
-
         objects.get(0);
 
         System.out.println(listMap);
         System.out.println(objects);
     }
 
+
+
+    //hashMap<>(16)默认长度是16
+    //hashMap<>(3)如果你面是3 规则是大于3的最小的2的N次方   所以这个map的长度是4  2的2次方  所以这个map的长度并不是3
+    //默认的负载因子是0.75 当map中暂用达到75%后 就会进行扩容
+    //map.put(120,"a")   120%16=8  8就是map存入到下标为8的map集合中
+    //实际中是map中key值 先求出hashcode值 然后除以16取余数  得到 多好  那么当前是数据就放入到哪里
+    //用hashCode 方法将key装换成hash吗后并进行优化得到优化后的hash码
+    //例如将“语文” 这个字符串优化后放入hash码是115347492;
+    @Test
+    public void testMap1() {
+        Map<Object, Object> object = new HashMap<>();
+        object.put("aaaa","wwwww");
+        if (object.isEmpty()) {
+            System.out.println("123");
+        }
+       // object.remove("aaaa");
+        System.out.println(object);
+        object.containsValue("wwwww");
+        object.containsKey("aaaa");
+        object.replace("aaaa","1");//只要key存在就替换
+        object.replace("aaaa","wwwww","eee");//匹配key和value一样才能替换
+        //object.replace("wwwww","3123"); 只能替换value值
+        object.putIfAbsent("aaa","3333");//如果key存在就不执行 如果不存在就增加
+        Object orDefault = object.getOrDefault("aaaa1", "lzy");//如果不存在 就输出默认值
+        String s = orDefault.toString();
+        System.out.println(object);
+        List<String> vvv = new ArrayList<>();
+        if (vvv.isEmpty()) {
+            System.out.println("2312312");
+        }
+        //isEmpty()不能判断为null类型 不然会报错
+    }
 
 
 }
