@@ -2,6 +2,8 @@ package com.demo.service.impl;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.demo.dao.UserMapper;
 import com.demo.entity.User;
@@ -28,7 +30,17 @@ public class UserServiceImplTest {
     private UserMapper userMapper;
     @Test
     public void test(){
+        //集合如果查询的是空 返回的是空数组 []
         List<User> test = userServiceImpl.test();
+        if (test.isEmpty()){
+            System.out.println("123231231");
+        }
+
+        //如果是对象没有查到 返回的是空 null类型
+        User one = userServiceImpl.getOne();
+        if (ObjectUtil.isEmpty(one)) {
+            System.out.println("1111111111");
+        }
     }
 
     @Test
@@ -81,4 +93,21 @@ public class UserServiceImplTest {
         Page<User> page = new Page<>(1, 3);
         userServiceImpl.selectUserPage(page,1000);
     }
+
+
+
+
+
+
+
+    @Test
+    public void getOne(){
+
+        User one = userServiceImpl.getOne();
+        if (ObjectUtil.isEmpty(one)) {
+            System.out.println("1111111111");
+        }
+    }
+
+
 }

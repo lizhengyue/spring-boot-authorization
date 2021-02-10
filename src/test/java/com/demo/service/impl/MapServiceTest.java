@@ -29,26 +29,19 @@ public class MapServiceTest {
         a.put("zs4",new Integer(120));
         a.put("zs5",new Integer(120));
 
-
-
-
-
-
-
         Map<String,String> a2 = new HashMap<>(9);
-
-
-
-
-
-
-
-
+        //List 继承Collection接口
         List<Map<String,Integer>> as = new ArrayList<>();
 
-
+        //Map 和conllection 的区别在于
+        //Map 存的关键是key和value
+        //Conllection存的关键是对象
+        //List接口继承的是Conllection 接口
+        //ArrayList 也实现了Conllection接口
         List<String> b = new ArrayList<>();
 
+        //
+        List<String> a4 = new  ArrayList<>();
 
         b.add("a");
         b.add("b");
@@ -57,19 +50,10 @@ public class MapServiceTest {
             System.out.println(b.get(i));
         }
 
-
-
-
-
-
-
-
         String[] aa =  {"aaa","bbbb","cccc"};
-
         for (int i=0;i<aa.length;i++){
             System.out.println(aa[i]);
         }
-
         for(String i : aa){
             System.out.println(i);
         }
@@ -79,6 +63,7 @@ public class MapServiceTest {
     @Test
     public void testMap(){
         Map<String,Integer> a = new HashMap<>(9);
+
         a.put("zs1",new Integer(120));
         a.put("zs2",new Integer(100));
         a.put("zs3",new Integer(80));
