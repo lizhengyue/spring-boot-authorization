@@ -15,6 +15,12 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
+        <mybatis-plus.version>3.4.1</mybatis-plus.version>
+        <jquery.version>3.5.1</jquery.version>
+        <layui.version>2.5.6</layui.version>
+        <locator.version>0.40</locator.version>
+        <hutool.version>5.5.7</hutool.version>
+        <freemark.version>2.3.30</freemark.version>
     </properties>
     <dependencies>
         <dependency>
@@ -68,6 +74,47 @@
             <groupId>p6spy</groupId>
             <artifactId>p6spy</artifactId>
             <version>3.8.7</version>
+        </dependency>
+        <!-- webjars-locator -->
+        <!--使用webjars可以把js，css等文件放入到maven里面统一管理-->
+        <!--引用locator的目的是为了不让前端在引入文件的时候加版本号-->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>webjars-locator</artifactId>
+            <version>${locator.version}</version>
+            <!--script src="/webjars/jquery/3.5.1/jquery.min.js"></script> -->
+            <!--<script src="/webjars/jquery/jquery.min.js"></script>  -->
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>${jquery.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>layui</artifactId>
+            <version>${layui.version}</version>
+        </dependency>
+
+        <!--代码生成器的模板依赖-->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemark.version}</version>
+            <!---scope 这个标签的含义是只在那个模块起作用-->
+            <scope>test</scope>
+        </dependency>
+        <!-- mybatis-plus-generator mybatis-plus代码生成器 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <version>${mybatis-plus.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
     </dependencies>
 
