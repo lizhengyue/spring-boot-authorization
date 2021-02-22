@@ -27,6 +27,7 @@ public class LoginController {
 	@PostMapping("login")
 	public String login(String username, String password, HttpSession session,
 						RedirectAttributes attributes, Model model){
+		//测试
 		LoginDto login = accountServiceImpl.login(username, password);
 		String error = login.getError();
 		if (error == null){
