@@ -28,6 +28,7 @@ public class LoginController {
 	public String login(String username, String password, HttpSession session,
 						RedirectAttributes attributes, Model model){
 		//测试
+		//测试2
 		LoginDto login = accountServiceImpl.login(username, password);
 		String error = login.getError();
 		if (error == null){
