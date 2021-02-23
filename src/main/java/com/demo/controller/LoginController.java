@@ -3,6 +3,7 @@ package com.demo.controller;
 import com.demo.dto.LoginDto;
 import com.demo.service.IAccountService;
 import com.demo.service.IResourceService;
+import com.demo.utils.RedisUtils;
 import com.demo.vo.ResourceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
