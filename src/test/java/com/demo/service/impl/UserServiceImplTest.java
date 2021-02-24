@@ -1,23 +1,16 @@
 package com.demo.service.impl;
 
-import cn.hutool.core.date.DateUnit;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.demo.dao.UserMapper;
+import com.demo.mapper.UserMapper;
 import com.demo.entity.User;
-import org.junit.Assert;
+import com.demo.utils.RedisUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.text.spi.DateFormatProvider;
-import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -108,6 +101,11 @@ public class UserServiceImplTest {
             System.out.println("1111111111");
         }
     }
+
+
+
+
+
 
 
 }

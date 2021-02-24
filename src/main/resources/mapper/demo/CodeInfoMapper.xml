@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.mapper.CodeInfoMapper">
+
+    <update id="updateByIdForThread" parameterType="com.demo.entity.CodeInfo">
+        update sys_code_info
+        <set>
+            name=#{name},
+            biz_type=#{bizType},
+            sub_code=#{subCode},
+            current_value=#{currentValue},
+            updater_id=#{updaterId},
+            update_time=#{updateTime}
+        </set>
+        where ID= #{id}
+    </update>
+</mapper>

@@ -4,7 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.demo.dto.LoginDto;
 import com.demo.entity.Account;
-import com.demo.dao.AccountMapper;
+import com.demo.mapper.AccountMapper;
 import com.demo.service.IAccountService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

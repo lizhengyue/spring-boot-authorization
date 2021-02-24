@@ -1,7 +1,7 @@
 package com.demo.service.impl;
 
 import com.demo.entity.Role;
-import com.demo.dao.RoleMapper;
+import com.demo.mapper.RoleMapper;
 import com.demo.service.IRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

@@ -17,10 +17,11 @@ import org.springframework.util.CollectionUtils;
  * @Author Scott
  *
  */
+@Component
 public class RedisUtils {
 
 	@Autowired
-	private RedisTemplate<String, Object> redisTemplate;
+	private RedisTemplate<String, Object>  redisTemplate;
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
 

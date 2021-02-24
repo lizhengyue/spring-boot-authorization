@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.demo.dao.UserMapper;
+import com.demo.mapper.UserMapper;
 import com.demo.entity.User;
 import com.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

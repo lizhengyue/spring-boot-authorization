@@ -1,4 +1,4 @@
-package com.demo.dao;
+package com.demo.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

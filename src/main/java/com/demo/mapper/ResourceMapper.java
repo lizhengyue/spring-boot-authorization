@@ -1,4 +1,4 @@
-package com.demo.dao;
+package com.demo.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
