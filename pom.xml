@@ -121,11 +121,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+
+        <!--redis共享session -->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
+        <!--apache提供的工具类 处理字符串 集合-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.11</version>
         </dependency>
+
         <!--java对象转json格式数据的一个工具-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -138,6 +146,13 @@
 <!--            <artifactId>persistence-api</artifactId>-->
 <!--            <version>1.0</version>-->
 <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+
+
     </dependencies>
 
 

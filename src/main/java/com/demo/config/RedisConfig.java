@@ -1,5 +1,6 @@
 package com.demo.config;
 
+import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,23 +31,26 @@ public class RedisConfig {
 	 */
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-		// 设置序列化
-		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<Object>(Object.class);
-		ObjectMapper om = new ObjectMapper();
-		om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-		jackson2JsonRedisSerializer.setObjectMapper(om);
+
+		/*
+		系统自带的redisTemplate 方法 只支持RedisTemplate<String, String> 所以这里需要重新配置一下 支持对象
+		 */
 		// 配置redisTemplate
-		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
+		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+
 		redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+		// 设置序列化
+		FastJsonRedisSerializer<Object> fastJsonRedisSerializer = new FastJsonRedisSerializer<>(Object.class);
 		RedisSerializer<?> stringSerializer = new StringRedisSerializer();
 		// key 序列化
 		redisTemplate.setKeySerializer(stringSerializer);
 		// value 序列化
-		redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+		redisTemplate.setValueSerializer(fastJsonRedisSerializer);
 		// Hash key序列化
 		redisTemplate.setHashKeySerializer(stringSerializer);
 		// Hash value序列化
-		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+		redisTemplate.setHashValueSerializer(fastJsonRedisSerializer);
+
 		redisTemplate.afterPropertiesSet();
 		return redisTemplate;
 	}

@@ -3,14 +3,12 @@
 <mapper namespace="com.demo.mapper.CodeInfoMapper">
 
     <update id="updateByIdForThread" parameterType="com.demo.entity.CodeInfo">
-        update sys_code_info
+        update code_info
         <set>
             name=#{name},
             biz_type=#{bizType},
             sub_code=#{subCode},
             current_value=#{currentValue},
-            updater_id=#{updaterId},
-            update_time=#{updateTime}
         </set>
         where ID= #{id}
     </update>

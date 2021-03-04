@@ -28,11 +28,6 @@ public class CodeInfo implements Serializable {
     private Long id;
 
     /**
-     * 商户ID
-     */
-    private Long tenantId;
-
-    /**
      * 名称
      */
     private String name;

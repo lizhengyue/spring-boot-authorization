@@ -16,7 +16,7 @@ public class CodeInfoServiceImplTest {
 	private CodeInfoServiceImpl codeInfoService;
 	@Test
 	public void nextCodeByConfig() {
-		String text001 = codeInfoService.nextCodeByConfig("test001");
-		System.out.println(text001);
+		String test001 = codeInfoService.nextCodeByConfig("test001");
+		System.out.println(test001);
 	}
 }

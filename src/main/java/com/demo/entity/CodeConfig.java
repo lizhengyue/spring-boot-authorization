@@ -5,13 +5,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.demo.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.demo.service.impl.CodeInfoServiceImpl;
 import io.netty.util.internal.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-import javax.persistence.Entity;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,11 +40,6 @@ public class CodeConfig extends BaseEntity {
     private ExpressionAnalyze expressionAnalyze;
 
     /**
-     * 商户ID
-     */
-    private Long tenantId;
-
-    /**
      * 名称
      */
     private String name;
@@ -67,10 +62,26 @@ public class CodeConfig extends BaseEntity {
 
 
 
+    public ExpressionAnalyze getExpressionAnalyze() {
+        if(expressionAnalyze == null) {
+            expressionAnalyze = new ExpressionAnalyze(this.expression);
+        }
+        return expressionAnalyze;
+    }
+
+
+
     public String analyzeExpression(){
-        System.out.println("========================="+ getExpressionAnalyze());
-     //   return null;
        return   getExpressionAnalyze().getAnalyzeResult();
+    }
+
+
+    public int getSerialNumberStart() {
+        return getExpressionAnalyze().serialNumberStart;
+    }
+
+    public int getSerialNumberEnd() {
+        return getExpressionAnalyze().serialNumberEnd;
     }
 
 
@@ -173,7 +184,9 @@ public class CodeConfig extends BaseEntity {
                 }
                 j++;
             }
+
             analyzeResult = result.toString();
+            System.out.println("0000000000000000000====="+analyzeResult);
         }
 
         private int addToIndexMap(Map<String, Integer[]> map, int i, char c) {
@@ -189,8 +202,6 @@ public class CodeConfig extends BaseEntity {
         public String getAnalyzeResult() {
             Date date = new Date();
             String dateStr = DateFormatUtils.format(date, "yyyyMMddHHmmss");
-            System.out.println("===================="+dateStr);
-            System.out.println("===================="+currentDateStr);
             if (!dateStr.equals(this.currentDateStr)) {
                 this.currentDateStr = dateStr;
                 initData();

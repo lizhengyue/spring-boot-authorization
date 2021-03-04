@@ -1,5 +1,7 @@
 package com.demo.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.demo.entity.CodeConfig;
 import com.demo.entity.CodeInfo;
@@ -7,13 +9,14 @@ import com.demo.mapper.CodeInfoMapper;
 import com.demo.service.ICodeConfigService;
 import com.demo.service.ICodeInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,29 +35,28 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 
 	private Map<String, UpdateThread> updateThreadMap = new ConcurrentHashMap<>();
 
-	protected RedisTemplate redisTemplate;
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
 
-	public static ApplicationContext APP_CONTEXT;
-
-	public static final String SEPERATE_TOKEN = ":";
-
-	private static Boolean cacheOpenFlag;
-
-	private static String redisPrefix;
-
-	private String storageKey = "RedisPrefix";
+	private final static String STORAGE_KEY = "RedisPrefix";
 
 	@Autowired
 	protected ICodeConfigService codeConfigService;
+
 	@Override
 	public String nextCodeByConfig(String type) {
-
-
 		CodeConfig codeConfig = codeConfigService.getByBizType(type);
-		System.out.println(codeConfig);
 		String analyzedExpression = codeConfig.analyzeExpression();
 		long nextNumber = nextCustomCode(type, analyzedExpression);
-		return null;
+
+		int serialLength = codeConfig.getSerialNumberEnd() - codeConfig.getSerialNumberStart();
+
+		String serialNumberStr = StringUtils.right(nextNumber + "", serialLength);
+
+		//填充0值
+		serialNumberStr = StringUtils.leftPad(serialNumberStr, serialLength, "0");
+
+		return StringUtils.substring(analyzedExpression, 0, codeConfig.getSerialNumberStart()) + serialNumberStr + StringUtils.substring(analyzedExpression, codeConfig.getSerialNumberEnd());
 	}
 
 
@@ -74,18 +76,32 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 	private long nextCustomCode(String type, String key) {
 		// 如果池中不存在需要获取的键值，则从数据库中获取
 		// redis会保存两份缓存，1.键=type:key 值=CodeInfo 2.zset类型，键=type，值score=currentValue，值value=key
-		String mapKey = getCacheKey(type, key);
+		// test001:ga20210304NNNN
+		String mapKey = type + ":" + key;
 		Double value = getCache(CodeInfo.class, type, key);
 		//get方法返回的类型是object 所以需要转一下啊
-		CodeInfo keyInfo = (CodeInfo) this.getOpsForValue().get(storageKey+":"+mapKey);
+		//RedisPrefix:test001:ga20210304NNNN
+		String codeKey = STORAGE_KEY + ":" + mapKey;
+
+		CodeInfo keyInfo = null;
+		JSONObject o = (JSONObject)redisTemplate.opsForValue().get(codeKey);
+		if(o != null){
+			keyInfo = o.toJavaObject(CodeInfo.class);
+		}
+
 		if (value == null || keyInfo == null) {
 			synchronized (this) {
-					keyInfo = this.initCodeInfo(type, key);
-				    value = new Double(keyInfo.getCurrentValue());
-					addCache(CodeInfo.class, type, key, value);
-				    this.getOpsForValue().set(storageKey+":"+mapKey, 1,3600L,TimeUnit.SECONDS);
+				//如果缓存没有，就初始化一个对象
+				keyInfo = this.initCodeInfo(type, key);
+				value = new Double(keyInfo.getCurrentValue());
+				//把当前的值放入缓存中
+				addCache(CodeInfo.class, type, key, value);
+				//把codeInfo对象放入缓存中
+				redisTemplate.opsForValue().set(codeKey, keyInfo,3600L,TimeUnit.SECONDS);
 			}
 		}
+
+
 		//自增+1
 		final Double nextKey = incrementCache(CodeInfo.class, type, key);
 		//设置当前值
@@ -113,7 +129,6 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 			keyInfo.setBizType(bizType);
 			keyInfo.setSubCode(subCode);
 			keyInfo.setCurrentValue(0L);
-		//	keyInfo = this.saveData(keyInfo);
 			save(keyInfo);
 		}
 		return keyInfo;
@@ -124,7 +139,7 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 	 * 获取配置的编码序列信息
 	 */
 	public CodeInfo getCodeInfo(String type, String key) {
-		Map<String, Object> parameters = new HashMap<String, Object>(2);
+		Map<String, Object> parameters = new HashMap<>(2);
 		parameters.put("bizType", type);
 		parameters.put("subCode", key);
 		QueryWrapper<CodeInfo> eq = new QueryWrapper<CodeInfo>().eq("biz_type", type).eq("sub_code", key);
@@ -133,45 +148,28 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 
 
 
+	//保存分数
 	public void addCache(Class cls, String key, String value, double score){
 		String curKey = getValueCacheKey(key, cls.getSimpleName());
-		getRedisTemplate().opsForZSet().add(curKey, value, score);
+		redisTemplate.opsForZSet().add(curKey, value, score);
 	}
 
+	//获取分数
 	public Double getCache(Class cls, String key, String value){
 		String curKey = getValueCacheKey(key, cls.getSimpleName());
-		return getRedisTemplate().opsForZSet().score(curKey, value);
+		return redisTemplate.opsForZSet().score(curKey, value);
 	}
 
+	//自增
 	public Double incrementCache(Class cls, String key, String value){
 		String curKey = getValueCacheKey(key, cls.getSimpleName());
-		return getRedisTemplate().opsForZSet().incrementScore(curKey, value, 1);
+		return redisTemplate.opsForZSet().incrementScore(curKey, value, 1);
 	}
 
+	//CodeInfoValue:test001
 	private String getValueCacheKey(String key, String simpleName) {
 		return simpleName + "Value"  + ":" + key;
 	}
-
-	public RedisTemplate getRedisTemplate() {
-
-		if (this.redisTemplate == null) {
-			this.redisTemplate = (RedisTemplate) APP_CONTEXT.getBean("redisTemplate");
-		}
-		return this.redisTemplate;
-	}
-
-
-	private String getCacheKey(String type, String key) {
-		return type + ":" + key;
-	}
-
-	private ValueOperations getOpsForValue() {
-		ValueOperations<String, Object> opsForValue = this.getRedisTemplate().opsForValue();
-		return opsForValue;
-	}
-
-
-
 
 	/**
 	 * 尝试保存，当一定时间内无请求进来时会执行保存操作
@@ -182,6 +180,7 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 		UpdateThread updateThread = updateThreadMap.get(mapKey);
 		if(updateThread == null) {
 			synchronized (this) {
+				System.out.println("=======================lzy");
 				updateThread = updateThreadMap.get(mapKey);
 				if (updateThread == null) {
 					updateThread = new UpdateThread(this, keyInfo);
@@ -197,7 +196,6 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 			trySave(mapKey, keyInfo);
 		}
 	}
-
 
 	class UpdateThread extends Thread {
 
@@ -223,8 +221,12 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 
 		@Override
 		public void run() {
+			System.out.println("=======start=====");
 			try {
+				System.out.println("=======sleep=====start");
 				sleep(500);
+				System.out.println("=======sleep=====after");
+				System.out.println("=======run====="+isUpdated);
 				while(isUpdated) {
 					isUpdated = false;
 					System.out.println("=================sleep updateData keyInfo================");
@@ -235,13 +237,17 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 				keyInfoService.updateData4Thread(keyInfo);
 				System.out.println("=================updateData keyInfo================");
 			} catch (InterruptedException e) {
+				System.out.println("====------catch");
 				Thread.interrupted();
 			} catch (Exception e) {
+				System.out.println("====------catch=============");
 				log.error(e.getMessage());
 				throw new RuntimeException(e.getMessage());
 			}
 		}
 	}
+
+
 
 
 }
