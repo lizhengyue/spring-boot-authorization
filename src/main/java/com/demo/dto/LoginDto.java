@@ -11,4 +11,5 @@ public class LoginDto {
 	private String path;
 	private String error;
 	private Account account;
+	private String token;
 }

@@ -14,4 +14,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IAccountService extends IService<Account> {
 	LoginDto login(String username, String password);
+
+	/**
+	 * 生成token值
+	 * @param user
+	 * @return
+	 */
+	String getToken(Account user);
 }

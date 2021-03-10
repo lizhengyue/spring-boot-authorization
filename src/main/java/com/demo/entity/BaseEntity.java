@@ -3,9 +3,13 @@ package com.demo.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class BaseEntity {
+/**
+ * @author Administrator
+ */
+public class BaseEntity implements Serializable {
 	/**
 	 * 创建时间
 	 */

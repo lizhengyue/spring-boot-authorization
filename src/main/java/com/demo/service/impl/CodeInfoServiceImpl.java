@@ -55,7 +55,7 @@ public class CodeInfoServiceImpl extends ServiceImpl<CodeInfoMapper, CodeInfo> i
 
 		//填充0值
 		serialNumberStr = StringUtils.leftPad(serialNumberStr, serialLength, "0");
-
+		//字符串截取
 		return StringUtils.substring(analyzedExpression, 0, codeConfig.getSerialNumberStart()) + serialNumberStr + StringUtils.substring(analyzedExpression, codeConfig.getSerialNumberEnd());
 	}
 

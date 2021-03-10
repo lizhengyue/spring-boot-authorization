@@ -15,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ICodeInfoService extends IService<CodeInfo> {
 
 	/**
-	 * 生成编号
+	 * 生成编号 todo 后面这个方法需要近一步优化
+	 *
 	 * @param type test001
 	 * @return
 	 */

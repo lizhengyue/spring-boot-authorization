@@ -2,6 +2,8 @@ package com.demo.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.digest.MD5;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.demo.dto.LoginDto;
 import com.demo.entity.Account;
 import com.demo.mapper.AccountMapper;
@@ -37,6 +39,15 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
 		}
 		loginDto.setPath("login/main");
 		loginDto.setAccount(one);
+		loginDto.setToken(getToken(one));
 		return loginDto;
+	}
+
+	@Override
+	public String getToken(Account user) {
+		String token = "";
+		token= JWT.create().withAudience(user.getAccountId().toString())
+				.sign(Algorithm.HMAC256(user.getPassword()));
+		return token;
 	}
 }
